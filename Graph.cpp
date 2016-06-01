@@ -15,7 +15,8 @@ void Graph::printgraph() const
 	for (int i = 0;i < this->size;i++)
 	{
 		for (int j = 0;j < this->size;j++)
-			printf("%d ",index[i][j]);
+			if (index[i][j] == -1) printf("- ");
+				else printf("%d ",index[i][j]);
 		printf("\n");
 	}
 			

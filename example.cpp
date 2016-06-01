@@ -117,6 +117,52 @@ void test1()
 
 }
 
+expr bool_to_int(expr a,context& c)
+{
+    expr one  = c.int_val(1);
+    expr zero = c.int_val(0);
+    return to_expr(c,Z3_mk_ite(c,a,one,zero));
+}
+
+void test2()
+{
+    std::cout<<"test2"<<"\n";
+    context c;
+    optimize opt(c);
+    params p(c);
+    p.set("priority",c.str_symbol("pareto"));
+    opt.set(p);
+    expr x = c.bool_const("x");
+    expr hh = c.bool_const("hh");
+    expr y = c.bool_const("y");
+    expr ha1 = bool_to_int(x,c);
+    ha1 = ha1 + bool_to_int(y,c);
+    expr ha2 = ha1 + hh;
+    opt.add(!hh);
+    //expr z = x - y;
+    optimize::handle h1 = opt.maximize(ha2);
+    //optimize::handle h2 = opt.maximize(z);
+    //while (true) 
+    //for (int i = 0;i < 11;i++)
+    {
+        if (sat == opt.check()) {
+            model m = opt.get_model();
+            std::cout
+             //<< x << ": " 
+             << opt.upper(h1)
+             <<"\n" 
+             <<m.eval(x)
+             <<"\n"
+             <<m.eval(y)
+           // << " " << y << ": " << opt.lower(h2)
+             << "\n";
+        }
+        else {
+            //break;
+        }
+    }
+}
+
 /**
    \brief Find a model for <tt>x >= 1 and y < x + 3</tt>.
 */
@@ -1258,6 +1304,7 @@ int main(int argc, char const *argv[])
         // demorgan();
         // bitvector_example2();
         test1();
+        test2();
         // find_model_example1();
         // nonlinear_example1();
         // bitvector_example1();
