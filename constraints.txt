@@ -1,0 +1,12 @@
+points.size()*4*minimum ->c
+
+c[index][position]
+
+for i:
+
+c[i][0][sourceposition] = 1 && c[i][searchtime][targetposition] = 1
+
+constraints:
+
+every movement is legal:	for t = 0 to searchtime (automatically saffice because of bfs?...)
+
