@@ -10,6 +10,18 @@ Graph::Graph(int _size)
 	memset(index,0,sizeof(index));
 }
 
+Graph::Graph(const Graph& graph_)
+{
+	this->size = graph_.size;
+	for (int i = 0;i < graph_.size;++i)
+		for (int j = 0;j < graph_.size;++j)
+			this->index[i][j] = graph_.index[i][j];
+	for (int i = 0; i < graph_.points.size();++i)
+		this->points.push_back(graph_.points[i]);
+	for (int i = 0; i < graph_.blocks.size(); ++i)
+		this->blocks.push_back(graph_.blocks[i]);
+}
+
 void Graph::printgraph() const
 {
 	for (int i = 0;i < this->size;i++)

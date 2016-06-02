@@ -7,16 +7,13 @@
 class Graph
 {
 private:
-	int size;
 public:
 	Graph(int);
+	Graph(const Graph&);
 	std::vector<Point> points;
 	std::vector<Point> blocks;
 	void printgraph() const;
-	int getsize()
-	{
-		return size;
-	}
+	int size;
 	const static int maxsize = 10;
 	int index[maxsize][maxsize];
 };

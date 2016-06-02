@@ -1,5 +1,5 @@
-main:main.o random.o graph.o SAT.o
-	g++ main.o random.o graph.o SAT.o -o main -lz3
+main:main.o random.o graph.o SAT.o test.o
+	g++ main.o random.o graph.o SAT.o test.o -o main -lz3
 main.o:main.cpp point.h graph.h random.h
 	g++ -c main.cpp -o main.o
 random.o:random.cpp random.h graph.h point.h
@@ -8,5 +8,7 @@ graph.o:graph.cpp graph.h point.h
 	g++ -c graph.cpp -o graph.o
 SAT.o: SAT.h SAT.cpp graph.h point.h
 	g++ -c SAT.cpp -o SAT.o -lz3
+Test.o: test.h graph.h
+	g++ -c test.cpp -o test
 clean:
 	rm -f *.o main

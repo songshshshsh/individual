@@ -28,23 +28,6 @@ public:
 	{
 		this->index = _index;
 	}
-	int getx() const
-	{
-		return x;
-	}
-	int gety() const
-	{
-		return y;
-	}
-	int getindex() const
-	{
-		return index;
-	}
-	friend int operator==(const Point& a,const Point& b)
-	{
-		return (a.getx() == b.getx() && a.gety() == b.gety());
-	}
-private:
 	int x,y;
 	int index;
 };
