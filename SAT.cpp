@@ -46,7 +46,11 @@ void SAT::computeroute()
 	// 		middle = (left + right)/2;
 	// 	}
 	// }
-	if (!violentget()) printf("Violent can't be solved.\n");
+
+	
+	//if (!violentget()) printf("Violent can't be solved.\n");
+	
+	//cout << "womeidiao" << endl;
 	if (!optimizedget()) printf("Opt can't be solved\n");
 }
 
@@ -138,11 +142,20 @@ void SAT::computexy(int index,int& x,int& y)
 	y = index / this->graph.getsize();
 }
 
-expr bool_to_int(expr a,context& c)
+expr bool_to_int(expr a,context& c,bool special)
 {
-	expr one  = c.int_val(1);
-    expr zero = c.int_val(0);
-	return to_expr(c,Z3_mk_ite(c,a,one,zero));
+	if (!special)
+	{
+		expr one  = c.int_val(1);
+	    expr zero = c.int_val(0);
+		return to_expr(c,Z3_mk_ite(c,a,one,zero));
+	}
+	else
+	{
+		expr one  = c.int_val(1);
+	    expr zero = c.int_val(1000);
+		return to_expr(c,Z3_mk_ite(c,a,one,zero));
+	}
 }
 
 bool SAT::optimizedget()
@@ -167,16 +180,17 @@ bool SAT::optimizedget()
     s.set(p);
 
     //optimize parameters
+    cout << "asdfasdfasdf"<< endl;
 
 
 	//source and target configuration
-	for (unsigned i = 0;i < this->graph.points.size()/2;i++)
-	{
-		int temp = i * this->graph.getsize()*this->graph.getsize() + computeindex(this->graph.points[2*i].getx(),this->graph.points[2*i].gety());
-		s.add(x[temp]);
-		temp = i * this->graph.getsize()*this->graph.getsize() + computeindex(this->graph.points[2*i+1].getx(),this->graph.points[2*i+1].gety());
-		s.add(x[temp]);
-	}
+	// for (unsigned i = 0;i < this->graph.points.size()/2;i++)
+	// {
+	// 	int temp = i * this->graph.getsize()*this->graph.getsize() + computeindex(this->graph.points[2*i].getx(),this->graph.points[2*i].gety());
+	// 	s.add(x[temp]);
+	// 	temp = i * this->graph.getsize()*this->graph.getsize() + computeindex(this->graph.points[2*i+1].getx(),this->graph.points[2*i+1].gety());
+	// 	s.add(x[temp]);
+	// }
 
 	cout<<"source and target"<<endl;
 
@@ -191,19 +205,26 @@ bool SAT::optimizedget()
 			int currenty = j / this->graph.getsize();
 			if (j == tem || j == start)
 			{
-				expr conjecture =  !x[i*this->graph.getsize()*this->graph.getsize()+j];
+				expr constfalse = c.bool_val(false);
+				expr tempted = bool_to_int(constfalse,c,false);
 				for (int k = 1;k <= 4;k++)
+				{
+					int newk = j + X[k]+Y[k] *this->graph.getsize();
+					int newkx = newk % this->graph.getsize();
+					int newky = newk / this->graph.getsize();
+					if ((abs(newkx - currentx) + abs(newky - currenty)) == 1)
 					if (int(j + X[k]+Y[k] *this->graph.getsize()) >= 0 &&
 					 j + X[k] +Y[k] *this->graph.getsize() < this->graph.getsize()*this->graph.getsize())
-					conjecture = conjecture || x[i*this->graph.getsize()*this->graph.getsize()+j + X[k] + Y[k]*this->graph.getsize()];
-				s.add(conjecture);
+						tempted = tempted + bool_to_int(x[i*this->graph.getsize()*this->graph.getsize()+newk],c,false);
+				}
+				s.add(tempted == 1 && x[i*this->graph.getsize()*this->graph.getsize()+ j] || !x[i*this->graph.getsize()*this->graph.getsize()+ j] );
 				//cout<<conjecture<<endl;
 			}
 			else 
 			{
 				expr conjecture =  !x[i*this->graph.getsize()*this->graph.getsize()+j];
 				expr constfalse = c.bool_val(false);
-				expr tempted = bool_to_int(constfalse,c);
+				expr tempted = bool_to_int(constfalse,c,false);
 				for (int k = 1;k <= 4;++k)
 				{
 						int newk = j + X[k]+Y[k] *this->graph.getsize();
@@ -212,10 +233,11 @@ bool SAT::optimizedget()
 						if (newk >= 0 &&
 						 newk < this->graph.getsize()*this->graph.getsize()
 						 	&& (newkx == currentx || newky == currenty))
-						 	tempted = tempted + bool_to_int(x[i*this->graph.getsize()*this->graph.getsize()+newk],c);
+						 	tempted = tempted + bool_to_int(x[i*this->graph.getsize()*this->graph.getsize()+newk],c,false);
 				}
+				//cout<<tempted<<endl;
 				try{
-					s.add(tempted == 2);
+					s.add((tempted == 2 && !conjecture) || (conjecture));
 				} catch(z3::exception& ex)
 				{
 					cout<<"exception: "<<ex<<endl;
@@ -301,7 +323,7 @@ bool SAT::optimizedget()
 				// 		}
 				// 	}
 				// conjecture = conjecture && fivegrids;
-				s.add(conjecture);
+				//s.add(conjecture);
 				//cout<<i<<' '<<j<<endl;
 				//cout<<conjecture<<endl;
 			}
@@ -349,37 +371,51 @@ bool SAT::optimizedget()
 		for (unsigned k = 0;k < this->graph.points.size()/2;k++)
 			con = con || x[k*this->graph.getsize()*this->graph.getsize()+p];
 		s.add(!con);
-		cout<<con<<endl;
+		//cout<<con<<endl;
 	}
 
 	cout<<"blockages"<<endl<<endl;
 
 
     expr f = c.bool_const("f");
-    expr z = bool_to_int(f,c);
+    expr z = bool_to_int(f,c,false);
     s.add(!f);
 
     for (unsigned i = 0;i < this->graph.points.size()/2;i++)
+    {
+    	int tem = this->graph.points[2*i].getx() + this->graph.getsize() *this->graph.points[2*i].gety();
+			int start = this->graph.points[2*i+1].getx() + this->graph.getsize() *this->graph.points[2*i+1].gety();
     	for (unsigned j = 0;j < this->graph.getsize()*this->graph.getsize();j++)
     	{
+    		bool special = false;
+    		if (j == tem || j == start) special = true;
     				try{
-    		z = z + bool_to_int(x[i*this->graph.getsize()*this->graph.getsize()+j],c);
+    		z = z + bool_to_int(x[i*this->graph.getsize()*this->graph.getsize()+j],c,special);
     		}
 		catch(z3::exception & ex)
 		{
 			cout<<"exception: "<<ex<<endl;
 		}
     	}
+    }
     optimize::handle h1 = s.minimize(z);
 
     //cout<<s<<endl;
 
 
     Graph haha(this->graph.getsize());
+
+    //model m = s.get_model();
+    //cout<<m<<endl;
+    cout<<"hhh"<<endl;
+
+    bool get = false;
 		
-    if (sat == s.check())
-	{
-		cout<<"yes"<<endl;
+		if (sat == s.check())
+		{
+			get = true;
+		}
+
 		model m = s.get_model();
 		for (unsigned i = 0; i < this->graph.points.size()/2; ++i) 
 		{
@@ -387,11 +423,13 @@ bool SAT::optimizedget()
 	        	if (eq(m.eval(x[i * this->graph.getsize()*this->graph.getsize() + j]),c.bool_val(true)))
 	        	{
 	        		haha.index[j%haha.getsize()][j/haha.getsize()] = i + 1; 
-	        		cout<<x[i * this->graph.getsize()*this->graph.getsize() + j]<<endl;
+	        		//cout<<x[i * this->graph.getsize()*this->graph.getsize() + j]<<endl;
 	        	}
     	}
     	haha.printgraph();
 		cout<<s.upper(h1)<<endl;
+		if (get)
+	{
     	return true;
 	}
 	else

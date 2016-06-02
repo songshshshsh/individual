@@ -14,6 +14,7 @@ int main()
 	Graph graph = random.generate();
 	graph.printgraph();
 	SAT sat(graph);
+	cout<<"wodiaole!!!"<<endl;
 	sat.computeroute();
 	
 	return 0;
