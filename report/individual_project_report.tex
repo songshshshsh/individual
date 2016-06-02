@@ -1,0 +1,169 @@
+\documentclass[12pt, a4paper]{article}
+% \usepackage[slantfont, boldfont]{xeCJK}
+\usepackage{ulem}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{colortbl}
+% \usepackage[top = 1.0in, bottom = 1.0in, left = 1.0in, right = 1.0in]{geometry}
+\usepackage{lipsum}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% \newcommand{\texttt}[1]{\texttt{\hyphenchar\font=\defaulthyphenchar #1}}
+% \DeclareFontFamily{\encodingdefault}{\ttdefault}{\hyphenchar\font=`\-}
+% \usepackage[htt]{hyphenat}
+% \newcommand{\origttfamily}{}%
+% \let\origttfamily=\ttfamily%
+% \renewcommand{\ttfamily}{\origttfamily \hyphenchar\font=45\relax}
+% \setCJKmainfont{SimSun}
+% \setCJKmonofont{SimSun}
+
+% \setmainfont[BoldFont={SimHei},ItalicFont={KaiTi}]{SimSun}
+% \setsansfont[BoldFont=SimHei]{KaiTi}
+% \setmonofont{NSimSun}
+
+\setlength{\parskip}{0.5\baselineskip}
+\setlength{\parindent}{2em}
+
+\newcolumntype{Y}{>{\columncolor{red}}p{12pt}}
+\newcolumntype{N}{>{\columncolor{white}}p{12pt}}
+% \title{???}
+% \author{???}
+
+
+% \lstset{numbers=left,
+% numberstyle=\tiny,
+% keywordstyle=\color{blue!70}, commentstyle=\color{red!50!green!50!blue!50},
+% frame=shadowbox,
+% rulesepcolor=\color{red!20!green!20!blue!20}
+% }
+
+\lstset{
+  % language=[ANSI]c,
+  basicstyle=\ttfamily,
+  % basicstyle=\small,
+  numbers=left,
+  keywordstyle=\color{blue},
+  numberstyle={\tiny\color{lightgray}},
+  stepnumber=1, %行号会逐行往上递增
+  numbersep=5pt,
+  commentstyle=\small\color{red},
+  backgroundcolor=\color[rgb]{0.95,1.0,1.0},
+  % showspaces=false,
+  % showtabs=false,
+  frame=shadowbox, framexleftmargin=5mm, rulesepcolor=\color{red!20!green!20!blue!20!},
+% frame=single,
+%  TABframe=single,
+  tabsize=4,
+  breaklines=tr,
+  extendedchars=false %这一条命令可以解决代码跨页时，章节标题，页眉等汉字不显示的问题
+}
+			
+\newcommand{\fullimage}[1]{
+	\begin{flushleft}
+		\includegraphics[width=\textwidth]{#1}
+	\end{flushleft}
+}
+
+\newcommand{\pause}[0]{}
+
+
+\title{Individual Project}
+\author{Song Shihong, 2015011267}
+% \date{2016年5月}
+
+\begin{document}
+
+	\maketitle
+	
+	\tableofcontents
+	\newpage
+	
+	\section{Overview}
+
+	This document will briefly introduce the structure of my project and the testing results of it.
+
+	\section{Algorithm}
+
+	Algorithm of formulating the path finding problem into a SAT problem: 
+
+		Use the method given by the paper:
+
+			\subsection{Symbols}
+
+				Let x(i,x,y) donate the i th set's connection situation. x(i,x,y) == 1 suggests that this specific point is occupied by the i th set.
+
+				Since z3 can't handle the array over one dimension, I choose to use an one-dimension vector x[] to represent it.
+
+			\subsection{Some constraints}
+
+				\subsubsection{Blockages}
+
+					if this specific point(x,y) is occupied by a block, every set will have a !x(i,x,y) added to donate that this point cannot be occupied.
+
+				\subsubsection{Fluidic constraints}
+
+					One specific point(x,y) can only be occupied by one set, namely, there should be only one x(p,x,y) true among all the x(i,x,y)(i = 1,2,...,number of set).
+
+				\subsubsection{Droplet movements}
+
+					Unlike the method given in the attached paper, our project doesn't take time in account. So the move of the Droplet can be divided into two parts.
+
+					The key goal of it is to make sure that every route is connected.  
+
+					\begin{itemize}
+
+						\item
+							For those points on the route which are not the source point or the terminal point, it should always be on the route and it should have exactly two degrees. Otherwise it should not be on the route.
+						\item
+							For the source point or the terminal point, it should have exactly one degree to make sure that this set is chosen.
+
+					\end{itemize}
+
+				\subsubsection{Optimize to get the best result}
+
+					This can be achieved using the z3 optimizer.
+
+					We set the optimization goal to be minimizing the variable z, which donate the set which haven't been connect * 2000 + the sum of the length of the route where the set have been connected.
+	\section{Tests}
+		\subsection{8*8 tests}
+	
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

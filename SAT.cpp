@@ -180,7 +180,7 @@ bool SAT::optimizedget()
     s.set(p);
 
     //optimize parameters
-    cout << "asdfasdfasdf"<< endl;
+    //cout << "asdfasdfasdf"<< endl;
 
 
 	//source and target configuration
@@ -192,7 +192,7 @@ bool SAT::optimizedget()
 	// 	s.add(x[temp]);
 	// }
 
-	cout<<"source and target"<<endl;
+	//cout<<"source and target"<<endl;
 
 
 	//droplet movement
@@ -329,7 +329,6 @@ bool SAT::optimizedget()
 			}
 		}
 
-	cout<<"droplet"<<endl<<endl;
 
 
 
@@ -351,7 +350,6 @@ bool SAT::optimizedget()
 				for (unsigned k = 0;k < this->graph.points.size()/2;k++)
 					conjecture = conjecture && (!x[k*this->graph.getsize()*this->graph.getsize()+j]);
 				temp = temp || conjecture;
-				//cout<<temp<<endl;
 				s.add(temp);
 		}
 	}
@@ -359,8 +357,6 @@ bool SAT::optimizedget()
 	{
 		cout<<"exception: "<<ex<<endl;
 	}
-	cout<<"fluidic"<<endl<<endl;
-
 
 	//blockages
 	for (unsigned i = 0;i < this->graph.blocks.size();i++)
@@ -371,10 +367,7 @@ bool SAT::optimizedget()
 		for (unsigned k = 0;k < this->graph.points.size()/2;k++)
 			con = con || x[k*this->graph.getsize()*this->graph.getsize()+p];
 		s.add(!con);
-		//cout<<con<<endl;
 	}
-
-	cout<<"blockages"<<endl<<endl;
 
 
     expr f = c.bool_const("f");
@@ -400,14 +393,7 @@ bool SAT::optimizedget()
     }
     optimize::handle h1 = s.minimize(z);
 
-    //cout<<s<<endl;
-
-
     Graph haha(this->graph.getsize());
-
-    //model m = s.get_model();
-    //cout<<m<<endl;
-    cout<<"hhh"<<endl;
 
     bool get = false;
 		
@@ -423,11 +409,16 @@ bool SAT::optimizedget()
 	        	if (eq(m.eval(x[i * this->graph.getsize()*this->graph.getsize() + j]),c.bool_val(true)))
 	        	{
 	        		haha.index[j%haha.getsize()][j/haha.getsize()] = i + 1; 
-	        		//cout<<x[i * this->graph.getsize()*this->graph.getsize() + j]<<endl;
 	        	}
     	}
     	haha.printgraph();
-		cout<<s.upper(h1)<<endl;
+    	stringstream xx;
+    	xx<<s.upper(h1);
+    	int length;
+    	xx>>length;
+		cout<<length<<endl;
+		cout<<"total connected number"<< (this->graph.points.size() * 1000 + 1000 - length)/2000<<endl;
+		cout<<"total length"<< length % 1000<<endl;
 		if (get)
 	{
     	return true;
