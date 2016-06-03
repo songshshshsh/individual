@@ -1,0 +1,23 @@
+0 2 0 1 0 0 3 0 
+0 0 0 0 0 0 0 0 
+0 0 0 4 0 0 2 0 
+0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 4 0 
+1 - 0 0 0 0 0 0 
+0 3 0 0 0 - 0 0 
+- 0 0 0 0 0 0 0 
+Computing...
+optimizedget
+total connected number: 3
+total length: 27
+run time of algorthm: 3.37109 s
+0 1 1 1 3 3 3 0 
+1 1 3 3 3 0 0 0 
+1 0 3 4 4 4 4 0 
+1 0 3 0 0 0 4 0 
+1 0 3 0 0 0 4 0 
+1 0 3 0 0 0 0 0 
+0 3 3 0 0 0 0 0 
+0 0 0 0 0 0 0 0 
+testing
+valid
