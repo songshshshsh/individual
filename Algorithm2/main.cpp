@@ -16,8 +16,9 @@ int main()
 
 	//use random to generate
 	Random random(size,pairs,blocks);
-	Graph graph = random.generate();
-	graph.printgraph();
+	random.generate();
+	Graph graph(size,pairs,blocks,"random.txt");
+	graph.printgraph(cout);
 
 	//solve the sat problem
 	SAT sat(graph);
@@ -30,7 +31,7 @@ int main()
 
 	//output the solution
 	Graph output = sat.GetSolution();
-	output.printgraph();
+	output.printgraph(cout);
 
 	//test if it is valid
 	cout<<"testing"<<endl;

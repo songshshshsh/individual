@@ -8,7 +8,7 @@ class Random
 {
 public:
 	Random(int,int,int);
-	Graph generate();
+	void generate();
 private:
 	Graph graph;
 	int size,pairs,blocks;

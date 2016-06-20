@@ -4,6 +4,7 @@
 class Point
 {
 public:
+	Point(){}
 	Point(int _x,int _y,int _index)
 	{
 		this->x = _x;
